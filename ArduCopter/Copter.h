@@ -222,6 +222,7 @@ public:
     friend class ModeThrow;
     friend class ModeZigZag;
     friend class ModeAutorotate;
+    friend class ModeComp;
 
     Copter(void);
 

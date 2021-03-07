@@ -36,6 +36,7 @@ public:
         ZIGZAG    =    24,  // ZIGZAG mode is able to fly in a zigzag manner with predefined point A and point B
         SYSTEMID  =    25,  // System ID mode produces automated system identification signals in the controllers
         AUTOROTATE =   26,  // Autonomous autorotation
+        COMP =         27,
     };
 
     // constructor
@@ -825,6 +826,8 @@ public:
     void angle_control_start();
     void angle_control_run();
 
+    friend class ModeComp;
+
 protected:
 
     const char *name() const override { return "GUIDED"; }
@@ -857,6 +860,7 @@ private:
     // controls which controller is run (pos or vel):
     GuidedMode guided_mode = Guided_TakeOff;
 
+    
 };
 
 
@@ -872,14 +876,53 @@ public:
     bool requires_GPS() const override { return false; }
     bool has_manual_throttle() const override { return false; }
     bool is_autopilot() const override { return true; }
+    bool in_guided_mode() const override { return true; }
 
 protected:
 
     const char *name() const override { return "GUIDED_NOGPS"; }
     const char *name4() const override { return "GNGP"; }
+};
+
+class ModeComp : public Mode{
+
+public:
+   // inherit constructor
+    using Mode::Mode;
+    bool init(bool ignore_checks) override;
+    void run() override;
+
+    bool requires_GPS() const override { return true; }
+    bool has_manual_throttle() const override { return false; }
+    bool allows_arming(bool from_gcs) const override { return true; }
+    bool is_autopilot() const override { return true; }
+
+protected:
+
+    const char *name() const override { return "COMP"; }
+    const char *name4() const override { return "COMP"; }
 
 private:
 
+    enum FlyMode{
+        takeoff =       0,
+        loiter =        1,
+        vision =        2,
+    };
+
+    FlyMode fly_mode;
+
+    void pos_control_start();
+    void pos_control_run();
+
+    bool use_pilot_yaw(void) const;
+
+    bool do_takeoff_start(float takeoff_alt_cm);
+    void takeoff_run();
+
+    bool set_destination(const Vector3f& destination, bool use_yaw, float yaw_cd, bool use_yaw_rate, float yaw_rate_cds, bool relative_yaw, bool terrain_alt);
+
+    void set_yaw_state(bool use_yaw, float yaw_cd, bool use_yaw_rate, float yaw_rate_cds, bool relative_angle);
 };
 
 
