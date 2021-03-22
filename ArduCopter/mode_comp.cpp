@@ -3,6 +3,8 @@
 bool ModeComp::init(bool ignore_checks){
     pos_control_start();
 
+    init_wp();
+
     do_takeoff_start(500.0f);
     return true;
 }
@@ -14,7 +16,7 @@ void ModeComp::run(){
             break;
 
         case loiter:
-            pos_control_run();
+            auto_loiter();
             break;
 
         case vision:
@@ -106,6 +108,7 @@ bool ModeComp::do_takeoff_start(float takeoff_alt_cm){
     if (!wp_nav->set_wp_destination(target_loc)) {
         // failure to set destination can only be because of missing terrain data
         AP::logger().Write_Error(LogErrorSubsystem::NAVIGATION, LogErrorCode::FAILED_TO_SET_DESTINATION);
+        gcs().send_text(MAV_SEVERITY_CRITICAL, "Failed");
         // failure is propagated to GCS with NAK
         return false;
     }
@@ -172,4 +175,45 @@ void ModeComp::set_yaw_state(bool use_yaw, float yaw_cd, bool use_yaw_rate, floa
     } else if (use_yaw_rate) {
         auto_yaw.set_rate(yaw_rate_cds);
     }
+}
+
+void ModeComp::init_wp(){
+    wp_nav->get_wp_stopping_point(wp_list[0]);
+    wp_count = 0;
+
+    float distance_a = 300.0f;
+    float distance_b = 300.0f;
+    float disantce_c = 300.0f;
+    float avoidance_degreed = 30.0f;
+
+    wp_list[1] = wp_list[0] + Vector3f(1.0f, 0, 0) * distance_a;
+    wp_list[2] = wp_list[1] + Vector3f(0, 1.0f, 0) * distance_b;
+    wp_list[3] = wp_list[2] + Vector3f(-1.0f, (-1.0f / (cosf(radians(avoidance_degreed)))), 0) * (disantce_c / 2.0f);
+    wp_list[4] = wp_list[3] + Vector3f(-1.0f, (1.0f / (cosf(radians(avoidance_degreed)))), 0) * (disantce_c / 2.0f);
+
+    wp_list[5] = wp_list[0];
+}
+
+// Loiter process, running at 400Hz
+void ModeComp::auto_loiter(){
+    static int timer;
+
+    if(wp_nav->reached_wp_destination()){
+        timer++;
+
+        if(timer < 5 * 400 && wp_count != 3){
+            goto outside;
+        }
+
+        timer = 0;
+        gcs().send_text(MAV_SEVERITY_CRITICAL, "Got Point:%d", wp_count);
+        if(wp_count == 5){
+            gcs().send_text(MAV_SEVERITY_CRITICAL, "Mission accomplished!");
+            copter.set_mode(Mode::Number::LAND, ModeReason::MISSION_END);
+        } else {
+            wp_nav->set_wp_destination(wp_list[++wp_count]);
+        }
+    }
+    outside:
+    pos_control_run();
 }

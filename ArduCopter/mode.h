@@ -923,6 +923,15 @@ private:
     bool set_destination(const Vector3f& destination, bool use_yaw, float yaw_cd, bool use_yaw_rate, float yaw_rate_cds, bool relative_yaw, bool terrain_alt);
 
     void set_yaw_state(bool use_yaw, float yaw_cd, bool use_yaw_rate, float yaw_rate_cds, bool relative_angle);
+
+    Vector3f wp_list[10];
+    int wp_count;
+    
+    void init_wp();
+    
+    void auto_loiter();
+
+    
 };
 
 

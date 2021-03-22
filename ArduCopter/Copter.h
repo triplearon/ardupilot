@@ -902,6 +902,8 @@ private:
 #endif
 #endif
     ModeAltHold mode_althold;
+
+    ModeComp mode_comp;
 #if MODE_AUTO_ENABLED == ENABLED
     ModeAuto mode_auto;
 #endif

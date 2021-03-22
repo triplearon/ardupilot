@@ -635,6 +635,12 @@ public:
     AP_Int32 rtl_options;
 #endif
 
+    // User define
+    AP_Float distance_a;
+    AP_Float distance_b;
+    AP_Float distance_c;
+    AP_Float avoidance_degreed;
+
 };
 
 extern const AP_Param::Info        var_info[];
