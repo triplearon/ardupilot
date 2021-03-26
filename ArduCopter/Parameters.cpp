@@ -351,6 +351,43 @@ const AP_Param::Info Copter::var_info[] = {
     // @RebootRequired: True
     GSCALAR(frame_type, "FRAME_TYPE", HAL_FRAME_TYPE_DEFAULT),
 
+    
+    // @Param: DISTANCE_A
+    // @DisplayName: DISTANCE A
+    // @Description: DISTANCE H TO A.
+    // @Units: cm
+    // @Range: 0 500
+    // @Increment: 1
+    // @User: Standard
+    GSCALAR(distance_a,  "DISTANCE_H_TO_A", 100.0f),
+
+    // @Param: DISTANCE_B
+    // @DisplayName: DISTANCE B
+    // @Description: DISTANCE A TO B.
+    // @Units: cm
+    // @Range: 0 500
+    // @Increment: 1
+    // @User: Standard
+    GSCALAR(distance_b,  "DISTANCE_A_TO_B", 100.0f),
+
+    // @Param: DISTANCE_C
+    // @DisplayName: DISTANCE C
+    // @Description: DISTANCE B TO C.
+    // @Units: cm
+    // @Range: 0 500
+    // @Increment: 1
+    // @User: Standard
+    GSCALAR(distance_c,  "DISTANCE_B_TO_C", 100.0f),
+
+    // @Param: AVOIDANCE_ANGLE
+    // @DisplayName: AVOIDANCE ANGLE
+    // @Description: THE ANGLE.
+    // @Units: cm
+    // @Range: 0 90
+    // @Increment: 1
+    // @User: Standard
+    GSCALAR(avoidance_angle,  "AVOIDANCE_ANGLE", 30.0f),
+
     // @Group: ARMING_
     // @Path: ../libraries/AP_Arming/AP_Arming.cpp
     GOBJECT(arming,                 "ARMING_", AP_Arming_Copter),

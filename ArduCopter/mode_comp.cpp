@@ -183,10 +183,10 @@ void ModeComp::init_wp(){
     wp_nav->get_wp_stopping_point(wp_list[0]);
     wp_count = 0;
 
-    float distance_a = 300.0f;
-    float distance_b = 300.0f;
-    float disantce_c = 300.0f;
-    float avoidance_degreed = 30.0f;
+    float distance_a = g.distance_a;
+    float distance_b = g.distance_b;
+    float disantce_c = g.distance_c;
+    float avoidance_degreed = g.avoidance_angle;
 
     wp_list[1] = wp_list[0] + Vector3f(1.0f, 0, 0) * distance_a;
     wp_list[2] = wp_list[1] + Vector3f(0, 1.0f, 0) * distance_b;
