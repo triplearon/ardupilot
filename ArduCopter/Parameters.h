@@ -199,6 +199,14 @@ public:
         k_param_circle_nav,
         k_param_loiter_nav,     // 105
 
+        //
+        // 106: Comp Parameter
+        //
+        k_param_distance_a = 106,
+        k_param_distance_b,
+        k_param_distance_c,
+        k_param_avoidance_angle,
+
         // 110: Telemetry control
         //
         k_param_gcs0 = 110,
@@ -415,6 +423,12 @@ public:
     AP_Int16        land_speed_high;
     AP_Int16        pilot_speed_up;    // maximum vertical ascending velocity the pilot may request
     AP_Int16        pilot_accel_z;               // vertical acceleration the pilot may request
+
+    // Comp Parameter
+    AP_Float distance_a;
+    AP_Float distance_b;
+    AP_Float distance_c;
+    AP_Float avoidance_angle;
 
     // Throttle
     //
